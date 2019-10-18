@@ -1,0 +1,145 @@
+---
+apiVersion: hive.openshift.io/v1alpha1
+kind: ClusterDeployment
+metadata:
+  name: mycluster
+  #annotations:
+  #  hive.openshift.io/syncset-pause: "true"
+spec:
+  preserveOnDelete: true
+  baseDomain: hive.example.com
+  clusterName: mycluster
+  installed: true
+  manageDNS: false
+  compute:
+  - name: worker
+    platform:
+      aws:
+        rootVolume:
+          iops: 100
+          size: 22
+          type: gp2
+        type: m4.large
+    replicas: 3
+  controlPlane:
+    name: master
+    platform:
+      aws:
+        rootVolume:
+          iops: 100
+          size: 22
+          type: gp2
+        type: m4.large
+    replicas: 3
+  imageSet:
+    name: openshift-v4.1.0-rc.8
+  images:
+    installerImagePullPolicy: Always
+  networking:
+    clusterNetworks:
+    - cidr: 10.128.0.0/14
+      hostSubnetLength: 23
+    machineCIDR: 10.0.0.0/16
+    serviceCIDR: 172.30.0.0/16
+    type: OpenShiftSDN
+  platform:
+    aws:
+      region: us-east-1
+  platformSecrets:
+    aws:
+      credentials:
+        name: mycluster-aws-creds
+  pullSecret:
+    name: mycluster-pull-secret
+  sshKey:
+    name: mycluster-ssh-key
+---
+apiVersion: hive.openshift.io/v1alpha1
+kind: ClusterProvision
+metadata:
+  name: mycluster
+  labels:
+      hive.openshift.io/cluster-deployment-name: mycluster
+spec:
+  adminKubeconfigSecret:
+    name: kcsecret
+  clusterDeployment:
+    name: mycluster
+  stage: complete
+  infraID: 'aa9418db-6597-49c8-9de7-9822157d3e24'
+  adminPasswordSecret:
+    name: sshsecret
+
+---
+apiVersion: hive.openshift.io/v1alpha1
+kind: ClusterDeployment
+metadata:
+  name: mycluster2
+  #annotations:
+  #  hive.openshift.io/syncset-pause: "true"
+spec:
+  preserveOnDelete: true
+  baseDomain: hive.example.com
+  clusterName: mycluster2
+  installed: true
+  manageDNS: false
+  compute:
+  - name: worker
+    platform:
+      aws:
+        rootVolume:
+          iops: 100
+          size: 22
+          type: gp2
+        type: m4.large
+    replicas: 3
+  controlPlane:
+    name: master
+    platform:
+      aws:
+        rootVolume:
+          iops: 100
+          size: 22
+          type: gp2
+        type: m4.large
+    replicas: 3
+  imageSet:
+    name: openshift-v4.1.0-rc.8
+  images:
+    installerImagePullPolicy: Always
+  networking:
+    clusterNetworks:
+    - cidr: 10.128.0.0/14
+      hostSubnetLength: 23
+    machineCIDR: 10.0.0.0/16
+    serviceCIDR: 172.30.0.0/16
+    type: OpenShiftSDN
+  platform:
+    aws:
+      region: us-east-1
+  platformSecrets:
+    aws:
+      credentials:
+        name: mycluster-aws-creds
+  pullSecret:
+    name: mycluster-pull-secret
+  sshKey:
+    name: mycluster-ssh-key
+---
+apiVersion: hive.openshift.io/v1alpha1
+kind: ClusterProvision
+metadata:
+  name: mycluster2
+  labels:
+      hive.openshift.io/cluster-deployment-name: mycluster2
+spec:
+  adminKubeconfigSecret:
+    name: kcsecret2
+  clusterDeployment:
+    name: mycluster2
+  stage: complete
+  infraID: 'aa9418db-6597-49c8-9de7-9822157d3e24'
+  adminPasswordSecret:
+    name: sshsecret
+
+---

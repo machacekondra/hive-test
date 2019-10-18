@@ -1,0 +1,17 @@
+apiVersion: hive.openshift.io/v1alpha1
+kind: SyncSet
+metadata:
+  name: mygroup2
+spec:
+  clusterDeploymentRefs:
+  - name: mycluster2
+
+  resourceApplyMode: Upsert
+
+  resources:
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: mycm
+    data:
+      sample: My sample test sync set.
